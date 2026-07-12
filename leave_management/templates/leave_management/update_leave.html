@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Leave | Employee Leave Portal{% endblock %}
+{% block page_title %}Update Leave{% endblock %}
+{% block page_description %}Adjust the selected leave application details.{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-warning text-dark py-3">
+                <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Update Leave</h4>
+            </div>
+            <div class="card-body p-4">
+                {% if msg %}
+                <div class="alert alert-success">{{ msg }}</div>
+                {% endif %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Employee</label>
+                        <select class="form-select" name="employee">
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}" {% if employee.id == leave.employee.id %}selected{% endif %}>{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Leave Type</label>
+                            <select class="form-select" name="leave_type">
+                                <option value="Casual" {% if leave.leave_type == "Casual" %}selected{% endif %}>Casual</option>
+                                <option value="Sick" {% if leave.leave_type == "Sick" %}selected{% endif %}>Sick</option>
+                                <option value="Earned" {% if leave.leave_type == "Earned" %}selected{% endif %}>Earned</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="Pending" {% if leave.status == "Pending" %}selected{% endif %}>Pending</option>
+                                <option value="Approved" {% if leave.status == "Approved" %}selected{% endif %}>Approved</option>
+                                <option value="Rejected" {% if leave.status == "Rejected" %}selected{% endif %}>Rejected</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">From Date</label>
+                            <input type="date" class="form-control" name="from_date" value="{{ leave.from_date|date:'Y-m-d' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">To Date</label>
+                            <input type="date" class="form-control" name="to_date" value="{{ leave.to_date|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <label class="form-label">Reason</label>
+                        <textarea class="form-control" rows="4" name="reason">{{ leave.reason }}</textarea>
+                    </div>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button class="btn btn-warning"><i class="bi bi-arrow-repeat me-2"></i>Update Leave</button>
+                        <a href="{% url 'display_leave' %}" class="btn btn-secondary"><i class="bi bi-arrow-left me-2"></i>Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Employee Leave Portal{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_description %}A quick summary of employee and leave activity.{% endblock %}
+
+{% block content %}
+<div class="row g-4 align-items-stretch">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="fw-bold mb-1">Welcome back, Admin</h4>
+                    <p class="text-muted mb-0">Manage records and monitor pending leave requests in one place.</p>
+                </div>
+                <span class="badge bg-primary-subtle text-primary">Live Overview</span>
+            </div>
+            <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                    <div class="card stat-card bg-primary text-white h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-people-fill display-5"></i>
+                            <h6 class="mt-3">Total Employees</h6>
+                            <h1 class="fw-bold mb-0">{{ total_employees }}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card stat-card bg-success text-white h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-calendar-check-fill display-5"></i>
+                            <h6 class="mt-3">Total Leave Applications</h6>
+                            <h1 class="fw-bold mb-0">{{ total_leaves }}</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm p-4 h-100">
+            <h5 class="fw-bold mb-3">Quick Actions</h5>
+            <div class="d-grid gap-2">
+                <a href="{% url 'insert' %}" class="btn btn-success"><i class="bi bi-person-plus-fill me-2"></i>Add Employee</a>
+                <a href="{% url 'display' %}" class="btn btn-primary"><i class="bi bi-table me-2"></i>View Employees</a>
+                <a href="{% url 'apply_leave' %}" class="btn btn-warning"><i class="bi bi-calendar-plus-fill me-2"></i>Apply Leave</a>
+                <a href="{% url 'display_leave' %}" class="btn btn-dark"><i class="bi bi-card-list me-2"></i>View Leave</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-hourglass-split display-5 text-warning"></i>
+                <h6 class="mt-3">Pending Leaves</h6>
+                <h1 class="fw-bold">{{ pending }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle-fill display-5 text-success"></i>
+                <h6 class="mt-3">Approved Leaves</h6>
+                <h1 class="fw-bold">{{ approved }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-x-circle-fill display-5 text-danger"></i>
+                <h6 class="mt-3">Rejected Leaves</h6>
+                <h1 class="fw-bold">{{ rejected }}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

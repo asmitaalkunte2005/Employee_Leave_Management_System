@@ -1,0 +1,103 @@
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --success: #16a34a;
+    --warning: #f59e0b;
+    --danger: #dc2626;
+    --muted: #6b7280;
+    --surface: #ffffff;
+    --border: #e5e7eb;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+    color: #1f2937;
+    min-height: 100vh;
+}
+
+.navbar {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+}
+
+.navbar-brand {
+    letter-spacing: 0.02em;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+.page-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.9rem;
+}
+
+.card {
+    border: 0;
+    border-radius: 1rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.12);
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.btn {
+    border-radius: 0.8rem;
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+}
+
+.table {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.table thead {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+}
+
+.form-control,
+.form-select,
+textarea {
+    border-radius: 0.8rem;
+    border-color: var(--border);
+    padding: 0.7rem 0.9rem;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.55em 0.8em;
+    border-radius: 999px;
+}
+
+.footer {
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.75);
+}

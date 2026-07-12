@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Employee | Employee Leave Portal{% endblock %}
+{% block page_title %}Add Employee{% endblock %}
+{% block page_description %}Create a new employee profile using the existing form fields.{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0"><i class="bi bi-person-plus-fill me-2"></i>Add Employee</h4>
+            </div>
+            <div class="card-body p-4">
+                {% if msg %}
+                <div class="alert alert-success">{{ msg }}</div>
+                {% endif %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Employee ID</label>
+                            <input type="number" class="form-control" name="employee_id" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Employee Name</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <input type="text" class="form-control" name="department" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" class="form-control" name="mobile_number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Joining</label>
+                            <input type="date" class="form-control" name="date_of_joining" required>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button class="btn btn-success"><i class="bi bi-floppy-fill me-2"></i>Save Employee</button>
+                        <a href="{% url 'display' %}" class="btn btn-primary"><i class="bi bi-list-ul me-2"></i>View Employees</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
