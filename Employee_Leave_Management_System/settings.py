@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'employee',
     'leave_management',
     'rest_framework',
-
 ]
 
 MIDDLEWARE = [
@@ -127,3 +126,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+LOGIN_URL = 'login_page'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login_page'

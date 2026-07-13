@@ -1,26 +1,41 @@
-from django.shortcuts import render, redirect
-from .models import Leave
-from employee.models import Employee
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+
+from employee.models import Employee
+
+from .models import Leave
 from .serializers import LeaveSerializer
 
 # ---------------- APPLY LEAVE ----------------
 
+@login_required
 def apply_leave(request):
+    if request.user.is_superuser:
+        employees = Employee.objects.all()
+    else:
+        employee_profile = Employee.objects.filter(user=request.user).first()
+        employees = Employee.objects.filter(id=employee_profile.id) if employee_profile else Employee.objects.none()
 
-    employees = Employee.objects.all()
     context = {"employees": employees}
 
     if request.method == "POST":
+        if request.user.is_superuser:
+            employee_id = request.POST.get("employee")
+        else:
+            employee_profile = Employee.objects.filter(user=request.user).first()
+            employee_id = employee_profile.id if employee_profile else None
 
-        employee_id = request.POST.get("employee")
+        if employee_id is None:
+            return redirect('employee_dashboard')
+
         leave_type = request.POST.get("leave_type")
         from_date = request.POST.get("from_date")
         to_date = request.POST.get("to_date")
         reason = request.POST.get("reason")
-        status = request.POST.get("status")
+        requested_status = request.POST.get("status", "Pending")
 
         employee = Employee.objects.get(id=employee_id)
 
@@ -30,7 +45,7 @@ def apply_leave(request):
             from_date=from_date,
             to_date=to_date,
             reason=reason,
-            status=status
+            status=requested_status if request.user.is_superuser else 'Pending'
         )
 
         leave.save()
@@ -42,14 +57,15 @@ def apply_leave(request):
 
 # ---------------- DISPLAY LEAVE ----------------
 
-from django.db.models import Q
-
+@login_required
 def display_leave(request):
-
     status = request.GET.get("status")
     leave_type = request.GET.get("leave_type")
 
-    leaves = Leave.objects.all()
+    if request.user.is_superuser:
+        leaves = Leave.objects.all()
+    else:
+        leaves = Leave.objects.filter(employee__user=request.user)
 
     if status:
         leaves = leaves.filter(status=status)
@@ -66,22 +82,28 @@ def display_leave(request):
 
 # ---------------- UPDATE LEAVE ----------------
 
+@login_required
 def update_leave(request, id):
-
     leave = Leave.objects.get(id=id)
-    employees = Employee.objects.all()
+
+    if not request.user.is_superuser and (leave.employee.user_id != request.user.id or leave.status != 'Pending'):
+        return redirect('employee_dashboard')
+
+    employees = Employee.objects.all() if request.user.is_superuser else Employee.objects.filter(user=request.user)
 
     if request.method == "POST":
+        if request.user.is_superuser:
+            employee_id = request.POST.get("employee")
+            leave.employee = Employee.objects.get(id=employee_id)
+            leave.status = request.POST.get("status", leave.status)
+        else:
+            leave.employee = Employee.objects.get(id=leave.employee.id)
+            leave.status = 'Pending'
 
-        employee_id = request.POST.get("employee")
-
-        leave.employee = Employee.objects.get(id=employee_id)
         leave.leave_type = request.POST.get("leave_type")
         leave.from_date = request.POST.get("from_date")
         leave.to_date = request.POST.get("to_date")
         leave.reason = request.POST.get("reason")
-        leave.status = request.POST.get("status")
-
         leave.save()
 
         return redirect('display_leave')
@@ -96,19 +118,15 @@ def update_leave(request, id):
 
 # ---------------- DELETE LEAVE ----------------
 
+@login_required
 def delete_leave(request, id):
-
     leave = Leave.objects.get(id=id)
 
+    if not request.user.is_superuser and (leave.employee.user_id != request.user.id or leave.status != 'Pending'):
+        return redirect('employee_dashboard')
+
     leave.delete()
-
-    leaves = Leave.objects.all()
-
-    context = {
-        "leaves": leaves
-    }
-
-    return render(request, "leave_management/display_leave.html", context)
+    return redirect('display_leave')
 
 
 
@@ -118,8 +136,11 @@ def delete_leave(request, id):
 
 # ================= GET ALL =================
 
+@login_required
 @api_view(['GET'])
 def leave_list_api(request):
+    if not request.user.is_superuser:
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     leaves = Leave.objects.all()
 
@@ -130,8 +151,11 @@ def leave_list_api(request):
 
 # ================= GET ONE =================
 
+@login_required
 @api_view(['GET'])
 def leave_detail_api(request, id):
+    if not request.user.is_superuser:
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     leave = Leave.objects.get(id=id)
 
@@ -142,8 +166,11 @@ def leave_detail_api(request, id):
 
 # ================= POST =================
 
+@login_required
 @api_view(['POST'])
 def leave_create_api(request):
+    if not request.user.is_superuser:
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     serializer = LeaveSerializer(data=request.data)
 
@@ -158,8 +185,11 @@ def leave_create_api(request):
 
 # ================= PUT =================
 
+@login_required
 @api_view(['PUT'])
 def leave_update_api(request, id):
+    if not request.user.is_superuser:
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     leave = Leave.objects.get(id=id)
 
@@ -176,8 +206,11 @@ def leave_update_api(request, id):
 
 # ================= DELETE =================
 
+@login_required
 @api_view(['DELETE'])
 def leave_delete_api(request, id):
+    if not request.user.is_superuser:
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
 
     leave = Leave.objects.get(id=id)
 

@@ -13,7 +13,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <a class="navbar-brand fw-bold" href="{% if user.is_authenticated and not user.is_superuser %}{% url 'employee_dashboard' %}{% else %}{% url 'home' %}{% endif %}">
                 <i class="bi bi-building-fill me-2"></i>Employee Leave Portal
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
@@ -21,9 +21,21 @@
             </button>
             <div class="collapse navbar-collapse" id="mainMenu">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'display' %}">Employees</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'display_leave' %}">Leave</a></li>
+                    {% if user.is_authenticated %}
+                        {% if user.is_superuser %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'display' %}">Employees</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'display_leave' %}">Leaves</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'employee_dashboard' %}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'apply_leave' %}">Apply Leave</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'display_leave' %}">My Leaves</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login_page' %}">Login</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
